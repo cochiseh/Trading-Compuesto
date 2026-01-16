@@ -1,0 +1,697 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+:root {
+    --bg-color: #0b0e14;
+    --card-bg: #151a25;
+    --input-bg: #1e2330;
+    --primary-blue: #2f66f6;
+    --success-green: #00c087;
+    --danger-red: #ff3b30;
+    --text-white: #ffffff;
+    --text-muted: #8890a0;
+    --border-color: #2a3040;
+
+    --font-family: 'Plus Jakarta Sans', sans-serif;
+
+    --card-radius: 16px;
+    --btn-radius: 12px;
+    --nav-height: 80px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-white);
+    font-family: var(--font-family);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    padding: 0;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--bg-color);
+    min-height: 100vh;
+    padding: 24px;
+    padding-bottom: calc(var(--nav-height) + 24px);
+    /* Space for bottom nav */
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    /* Hide bottom padding on auth view */
+    transition: padding 0.3s;
+}
+
+.app-container.auth-mode {
+    padding-bottom: 24px;
+    justify-content: center;
+}
+
+/* Views Logic */
+.view {
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Header Sections */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.header-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.action-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* --- AUTH SPECIFIC --- */
+.auth-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    gap: 32px;
+}
+
+.auth-logo {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, #2f66f6, #8b5cf6);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: white;
+    box-shadow: 0 20px 40px rgba(47, 102, 246, 0.3);
+}
+
+.auth-title {
+    font-size: 2rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.auth-sub {
+    color: var(--text-muted);
+}
+
+.auth-form {
+    width: 100%;
+    background: var(--card-bg);
+    padding: 24px;
+    border-radius: var(--card-radius);
+    border: 1px solid var(--border-color);
+}
+
+.auth-toggle {
+    margin-top: 24px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-link {
+    color: var(--primary-blue);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+/* PNL Hero */
+.pnl-hero {
+    background: linear-gradient(180deg, rgba(21, 26, 37, 0) 0%, rgba(47, 102, 246, 0.05) 100%);
+    border-radius: var(--card-radius);
+    padding: 10px 0;
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.pnl-label {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.pnl-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.pnl-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.pnl-badge.positive {
+    background: rgba(0, 192, 135, 0.15);
+    color: var(--success-green);
+}
+
+.pnl-badge.negative {
+    background: rgba(255, 59, 48, 0.15);
+    color: var(--danger-red);
+}
+
+.pnl-badge.neutral {
+    background: rgba(136, 144, 160, 0.15);
+    color: var(--text-muted);
+}
+
+.pnl-sub {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 8px;
+}
+
+/* Stats Grid used in Dashboard & Analytics */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-top: 10px;
+    background: var(--card-bg);
+    padding: 16px;
+    border-radius: var(--card-radius);
+    border: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.stat-item:not(:last-child) {
+    border-right: 1px solid var(--border-color);
+}
+
+.stat-title {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+}
+
+.stat-num {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-white);
+}
+
+/* --- ANALYTICS SPECIFIC --- */
+
+/* Chart Container */
+.chart-container {
+    width: 100%;
+    height: 220px;
+    position: relative;
+    margin-bottom: 32px;
+    overflow: visible;
+    /* Allow glow/dropshadow to spill */
+}
+
+.chart-svg {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.chart-tooltip {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background: white;
+    color: black;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.chart-tooltip.visible {
+    opacity: 1;
+}
+
+/* Advanced Metrics Grid */
+.metrics-grid-advanced {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 32px;
+}
+
+.metric-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.metric-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.metric-sub {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+/* Monthly Breakdown */
+.monthly-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 20px;
+}
+
+.month-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.month-name {
+    width: 30px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.progress-container {
+    flex: 1;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.progress-bar {
+    height: 100%;
+    border-radius: 4px;
+}
+
+.progress-bar.positive {
+    background: var(--primary-blue);
+}
+
+.progress-bar.negative {
+    background: var(--danger-red);
+    opacity: 0.8;
+}
+
+.month-value {
+    width: 60px;
+    text-align: right;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+
+/* Recent Trades (List) */
+.section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.trades-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.trade-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.1s;
+}
+
+.trade-card:active {
+    transform: scale(0.98);
+}
+
+.trade-left {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.asset-icon {
+    width: 40px;
+    height: 40px;
+    background: #252b3b;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--text-white);
+    font-size: 1rem;
+    overflow: hidden;
+    /* Important for imgs */
+}
+
+/* Image override inside icon */
+.asset-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.trade-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.trade-asset {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.trade-date {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.trade-right {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.trade-pnl {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.profit-text {
+    color: var(--success-green);
+}
+
+.loss-text {
+    color: var(--danger-red);
+}
+
+.trade-perc {
+    font-size: 0.8rem;
+    margin-left: 6px;
+}
+
+.trade-balance {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.delete-btn-card {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    opacity: 0.3;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.input-container {
+    position: relative;
+    background: var(--input-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+}
+
+.input-container:focus-within {
+    border-color: var(--primary-blue);
+}
+
+.input-container input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    padding: 16px;
+    color: var(--text-white);
+    font-size: 1rem;
+    font-family: var(--font-family);
+    outline: none;
+}
+
+.input-icon {
+    padding-right: 16px;
+    color: var(--text-muted);
+}
+
+.btn-primary {
+    background: var(--primary-blue);
+    color: white;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: var(--btn-radius);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    margin-top: 20px;
+    box-shadow: 0 4px 20px rgba(47, 102, 246, 0.25);
+}
+
+/* Checkbox */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: var(--input-bg);
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    position: relative;
+}
+
+.custom-checkbox input:checked~.checkmark {
+    background: var(--primary-blue);
+}
+
+/* Bottom Nav */
+.bottom-nav {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 40px);
+    max-width: 440px;
+    height: 70px;
+    background: rgba(21, 26, 37, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+    /* Hide by default (auth screen) */
+    display: none;
+}
+
+/* Show nav when logged in */
+.app-container.logged-in .bottom-nav {
+    display: flex;
+}
+
+.nav-item {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-item.active {
+    color: var(--primary-blue);
+}
+
+.nav-item span {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.nav-icon {
+    font-size: 24px;
+}
+
+/* Profile Styles */
+.profile-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--card-radius);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.profile-card:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.profile-card.active-profile {
+    border-color: var(--primary-blue);
+    background: rgba(47, 102, 246, 0.1);
+}
+
+.profile-avatar {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, #2f66f6, #8b5cf6);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+}
+
+.profile-info {
+    flex: 1;
+    margin-left: 12px;
+}
+
+.profile-name {
+    display: block;
+    font-weight: 700;
+}
+
+.profile-sub {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.hidden {
+    display: none;
+}
