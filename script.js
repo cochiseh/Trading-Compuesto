@@ -8,11 +8,17 @@ const CONFIG = {
 };
 
 // Initialize Supabase (Check if keys are set)
+// Initialize Supabase (Check if keys are set)
 let supabase;
-if (CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
-} else {
-    console.warn("Supabase Keys missing in script.js");
+try {
+    if (CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL' && window.supabase) {
+        supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+    } else {
+        if (!window.supabase) console.error("Supabase SDK not loaded");
+        else console.warn("Supabase Keys missing or invalid");
+    }
+} catch (err) {
+    console.error("Supabase Init Error:", err);
 }
 
 let state = {
@@ -73,28 +79,43 @@ const elements = {
 };
 
 async function init() {
+    // 1. Setup UI Listeners immediately (Critical)
     setupEventListeners();
 
-    // Check Session logic
+    // 2. Check Session logic (Safeguarded)
     if (supabase) {
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            handleSessionSuccess(session.user);
-        } else {
-            showAuth();
-        }
+        try {
+            // Short timeout to prevent hanging on file:// or bad network
+            const sessionPromise = supabase.auth.getSession();
+            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000));
 
-        // Listen for auth changes
-        supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'SIGNED_IN' && session) {
+            const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
+
+            if (session) {
                 handleSessionSuccess(session.user);
-            } else if (event === 'SIGNED_OUT') {
-                currentUser = null;
+            } else {
                 showAuth();
             }
-        });
+
+            // Listen for auth changes
+            supabase.auth.onAuthStateChange((event, session) => {
+                if (event === 'SIGNED_IN' && session) {
+                    handleSessionSuccess(session.user);
+                } else if (event === 'SIGNED_OUT') {
+                    currentUser = null;
+                    showAuth();
+                }
+            });
+        } catch (err) {
+            console.warn("Auth Session Check Failed (Offline/File Protocol?):", err);
+            showAuth(); // Fallback to auth screen
+            if (window.location.protocol === 'file:') {
+                alert("Note: Supabase Auth may not work on 'file://'. Please deploy or use a local server.");
+            }
+        }
     } else {
-        alert("Please configure Supabase URL and Key in script.js");
+        // No supabase configured
+        showAuth();
     }
 
     document.getElementById('tradeDate').valueAsDate = new Date();
