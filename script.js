@@ -3,22 +3,21 @@ const CONFIG = {
     SUPABASE_URL: 'https://agvjxfekuxmvnanlnacx.supabase.co',
     SUPABASE_KEY: 'sb_publishable_CGSoHknNKXtYJ_jwubGbQw_fo3lGdAE',
 
-    LOCALE: 'en-US',
+    LOCALE: 'es-ES',
     CURRENCY: 'USD'
 };
 
 // Initialize Supabase (Check if keys are set)
-// Initialize Supabase (Check if keys are set)
 let supabase;
 try {
-    if (CONFIG.SUPABASE_URL !== 'YOUR_SUPABASE_URL' && window.supabase) {
+    if (window.supabase) {
         supabase = window.supabase.createClient(CONFIG.SUPABASE_URL, CONFIG.SUPABASE_KEY);
+        console.log("Cliente Supabase Inicializado");
     } else {
-        if (!window.supabase) console.error("Supabase SDK not loaded");
-        else console.warn("Supabase Keys missing or invalid");
+        console.error("Supabase SDK no cargado");
     }
 } catch (err) {
-    console.error("Supabase Init Error:", err);
+    console.error("Error Inicialización Supabase:", err);
 }
 
 let state = {
@@ -29,76 +28,79 @@ let state = {
 let currentUser = null;
 let isSignUpMode = false;
 
-const elements = {
-    appContainer: document.getElementById('appContainer'),
-    mainHeader: document.getElementById('mainHeader'),
-    views: document.querySelectorAll('.view'),
-    navItems: document.querySelectorAll('.nav-item'),
-    appTitle: document.getElementById('appTitle'),
-
-    // Auth Elements
-    authForm: document.getElementById('authForm'),
-    authEmail: document.getElementById('authEmail'),
-    authPassword: document.getElementById('authPassword'),
-    authSubmitBtn: document.getElementById('authSubmitBtn'),
-    authToggleLink: document.getElementById('authToggleLink'),
-    authToggleText: document.getElementById('authToggleText'),
-    authError: document.getElementById('authError'),
-    logoutBtn: document.getElementById('logoutBtn'),
-
-    // Dashboard Stats
-    totalProfitLoss: document.getElementById('totalProfitLoss'),
-    percentageBadge: document.getElementById('percentageBadge'),
-    percentageGain: document.getElementById('percentageGain'),
-    totalTrades: document.getElementById('totalTrades'),
-    winRate: document.getElementById('winRate'),
-    winLoss: document.getElementById('winLoss'),
-    tradesList: document.getElementById('tradesList'),
-    emptyState: document.getElementById('emptyState'),
-
-    // Analytics
-    analyticsEquity: document.getElementById('analyticsEquity'),
-    statAvgGain: document.getElementById('statAvgGain'),
-    statProfitFactor: document.getElementById('statProfitFactor'),
-    statProfitFactorText: document.getElementById('statProfitFactorText'),
-    statBestTrade: document.getElementById('statBestTrade'),
-    statBestTradeAsset: document.getElementById('statBestTradeAsset'),
-    statWorstTrade: document.getElementById('statWorstTrade'),
-    statWorstTradeAsset: document.getElementById('statWorstTradeAsset'),
-    monthlyList: document.getElementById('monthlyList'),
-    chartFill: document.getElementById('chartFill'),
-    chartLine: document.getElementById('chartLine'),
-    chartActivePoint: document.getElementById('chartActivePoint'),
-
-    // Inputs
-    tradeForm: document.getElementById('tradeForm'),
-    createProfileForm: document.getElementById('createProfileForm'),
-    newProfileName: document.getElementById('newProfileName'),
-    clearDataBtn: document.getElementById('clearDataBtn'),
-    profileList: document.getElementById('profileList')
-};
+// Will be populated on init
+let elements = {};
 
 async function init() {
-    // 1. Setup UI Listeners immediately (Critical)
+    console.log("App Inicializándose...");
+
+    // Map Elements
+    elements = {
+        appContainer: document.getElementById('appContainer'),
+        mainHeader: document.getElementById('mainHeader'),
+        views: document.querySelectorAll('.view'),
+        navItems: document.querySelectorAll('.nav-item'),
+        appTitle: document.getElementById('appTitle'),
+
+        // Auth
+        authForm: document.getElementById('authForm'),
+        authEmail: document.getElementById('authEmail'),
+        authPassword: document.getElementById('authPassword'),
+        authSubmitBtn: document.getElementById('authSubmitBtn'),
+        authToggleLink: document.getElementById('authToggleLink'),
+        authToggleText: document.getElementById('authToggleText'),
+        authError: document.getElementById('authError'),
+        logoutBtn: document.getElementById('logoutBtn'),
+
+        // Dashboard
+        totalProfitLoss: document.getElementById('totalProfitLoss'),
+        percentageBadge: document.getElementById('percentageBadge'),
+        percentageGain: document.getElementById('percentageGain'),
+        totalTrades: document.getElementById('totalTrades'),
+        winRate: document.getElementById('winRate'),
+        winLoss: document.getElementById('winLoss'),
+        tradesList: document.getElementById('tradesList'),
+        emptyState: document.getElementById('emptyState'),
+
+        // Analytics
+        analyticsEquity: document.getElementById('analyticsEquity'),
+        statAvgGain: document.getElementById('statAvgGain'),
+        statProfitFactor: document.getElementById('statProfitFactor'),
+        statProfitFactorText: document.getElementById('statProfitFactorText'),
+        statBestTrade: document.getElementById('statBestTrade'),
+        statBestTradeAsset: document.getElementById('statBestTradeAsset'),
+        statWorstTrade: document.getElementById('statWorstTrade'),
+        statWorstTradeAsset: document.getElementById('statWorstTradeAsset'),
+        monthlyList: document.getElementById('monthlyList'),
+        chartFill: document.getElementById('chartFill'),
+        chartLine: document.getElementById('chartLine'),
+        chartActivePoint: document.getElementById('chartActivePoint'),
+
+        // Inputs
+        tradeForm: document.getElementById('tradeForm'),
+        createProfileForm: document.getElementById('createProfileForm'),
+        newProfileName: document.getElementById('newProfileName'),
+        clearDataBtn: document.getElementById('clearDataBtn'),
+        profileList: document.getElementById('profileList')
+    };
+
     setupEventListeners();
 
-    // 2. Check Session logic (Safeguarded)
+    // Check Session logic
     if (supabase) {
         try {
-            // Short timeout to prevent hanging on file:// or bad network
-            const sessionPromise = supabase.auth.getSession();
-            const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), 2000));
-
-            const { data: { session } } = await Promise.race([sessionPromise, timeoutPromise]);
-
+            const { data: { session } } = await supabase.auth.getSession();
             if (session) {
+                console.log("Sesión encontrada:", session.user.email);
                 handleSessionSuccess(session.user);
             } else {
+                console.log("Sin sesión, mostrando auth");
                 showAuth();
             }
 
             // Listen for auth changes
             supabase.auth.onAuthStateChange((event, session) => {
+                console.log("Cambio Auth:", event);
                 if (event === 'SIGNED_IN' && session) {
                     handleSessionSuccess(session.user);
                 } else if (event === 'SIGNED_OUT') {
@@ -107,18 +109,17 @@ async function init() {
                 }
             });
         } catch (err) {
-            console.warn("Auth Session Check Failed (Offline/File Protocol?):", err);
-            showAuth(); // Fallback to auth screen
-            if (window.location.protocol === 'file:') {
-                alert("Note: Supabase Auth may not work on 'file://'. Please deploy or use a local server.");
-            }
+            console.error("Error Auth:", err);
+            showAuth();
         }
     } else {
-        // No supabase configured
+        alert("Error: Supabase no configurado. Revisa la consola.");
         showAuth();
     }
 
-    document.getElementById('tradeDate').valueAsDate = new Date();
+    if (document.getElementById('tradeDate')) {
+        document.getElementById('tradeDate').valueAsDate = new Date();
+    }
 }
 
 // --- AUTH LOGIC ---
@@ -133,10 +134,7 @@ async function handleSessionSuccess(user) {
     currentUser = user;
     elements.appContainer.classList.add('logged-in');
     elements.mainHeader.style.display = 'flex';
-
-    // Load Data from Cloud
     await loadStateFromCloud();
-
     switchView('view-dashboard');
 }
 
@@ -145,44 +143,53 @@ async function handleAuthSubmit(e) {
     if (!supabase) return;
 
     const email = elements.authEmail.value;
-    constpassword = elements.authPassword.value;
+    const password = elements.authPassword.value;
+
+    if (!email || !password) {
+        alert("Por favor introduce correo y contraseña");
+        return;
+    }
 
     elements.authError.style.display = 'none';
     elements.authSubmitBtn.disabled = true;
-    elements.authSubmitBtn.textContent = 'Processing...';
+    elements.authSubmitBtn.textContent = 'Procesando...';
 
     try {
         if (isSignUpMode) {
             const { data, error } = await supabase.auth.signUp({
                 email: email,
-                password: elements.authPassword.value
+                password: password
             });
             if (error) throw error;
-            alert('Registration successful! Please sign in.');
-            toggleAuthMode(); // Switch to login
+            alert('¡Registro exitoso! Verifica tu correo (si está habilitado) o Inicia Sesión.');
+            toggleAuthMode();
         } else {
             const { data, error } = await supabase.auth.signInWithPassword({
                 email: email,
-                password: elements.authPassword.value
+                password: password
             });
             if (error) throw error;
-            // onAuthStateChange will handle redirection
         }
     } catch (err) {
-        elements.authError.textContent = err.message;
+        console.error(err);
+        let msg = err.message;
+        if (msg === "Invalid login credentials") msg = "Credenciales inválidas. Verifica tu correo y contraseña.";
+        if (msg.includes("weak_password")) msg = "La contraseña debe tener al menos 6 caracteres.";
+
+        elements.authError.textContent = msg;
         elements.authError.style.display = 'block';
     } finally {
         elements.authSubmitBtn.disabled = false;
-        elements.authSubmitBtn.textContent = isSignUpMode ? 'Sign Up' : 'Sign In';
+        elements.authSubmitBtn.textContent = isSignUpMode ? 'Registrarse' : 'Iniciar Sesión';
     }
 }
 
 function toggleAuthMode() {
     isSignUpMode = !isSignUpMode;
-    elements.authTitle.textContent = isSignUpMode ? 'Create Account' : 'Welcome Back';
-    elements.authSubmitBtn.textContent = isSignUpMode ? 'Sign Up' : 'Sign In';
-    elements.authToggleText.textContent = isSignUpMode ? 'Already have an account?' : "Don't have an account?";
-    elements.authToggleLink.textContent = isSignUpMode ? 'Sign In' : 'Sign Up';
+    elements.authTitle.textContent = isSignUpMode ? 'Crear Cuenta' : 'Bienvenido de Nuevo';
+    elements.authSubmitBtn.textContent = isSignUpMode ? 'Registrarse' : 'Iniciar Sesión';
+    elements.authToggleText.textContent = isSignUpMode ? '¿Ya tienes cuenta?' : "¿No tienes cuenta?";
+    elements.authToggleLink.textContent = isSignUpMode ? 'Iniciar Sesión' : 'Registrarse';
     elements.authError.style.display = 'none';
 }
 
@@ -192,70 +199,74 @@ async function handleLogout() {
 
 // --- CLOUD DATA LOGIC ---
 
-// Database Schema (Run this in Supabase SQL Editor):
-// create table if not exists user_data (
-//   user_id uuid primary key references auth.users(id),
-//   content jsonb
-// );
-// alter table user_data enable row level security;
-// create policy "Users can all their own data" on user_data for all using (auth.uid() = user_id);
-
 async function loadStateFromCloud() {
     if (!currentUser) return;
 
-    const { data, error } = await supabase
-        .from('user_data')
-        .select('content')
-        .eq('user_id', currentUser.id)
-        .single();
+    try {
+        const { data, error } = await supabase
+            .from('user_data')
+            .select('content')
+            .eq('user_id', currentUser.id)
+            .maybeSingle(); // Use maybeSingle to avoid error if no row exists
 
-    if (data && data.content) {
-        state = data.content;
-    } else {
-        // Initialize Default State for new user
-        const defaultId = Date.now().toString();
-        state = {
-            activeProfileId: defaultId,
-            profiles: {
-                [defaultId]: {
-                    id: defaultId,
-                    name: 'My Portfolio',
-                    trades: [],
-                    initialCapital: 0
+        if (error) {
+            console.error('Error cargando datos:', error);
+            // Don't crash, just load default
+        }
+
+        if (data && data.content) {
+            state = data.content;
+        } else {
+            console.log("No se encontraron datos previos, creando nuevo estado.");
+            const defaultId = Date.now().toString();
+            state = {
+                activeProfileId: defaultId,
+                profiles: {
+                    [defaultId]: {
+                        id: defaultId,
+                        name: 'Mi Portafolio',
+                        trades: [],
+                        initialCapital: 0
+                    }
                 }
-            }
-        };
-        saveState(); // Save initial state to cloud
+            };
+            await saveState(); // Save the initial state immediately
+        }
+    } catch (err) {
+        console.error("Error inesperado cargando datos:", err);
     }
+
     updateUI();
 }
 
 async function saveState() {
     if (!currentUser || !supabase) return;
-
-    // Optimistic UI Update first (optional)
     updateUI();
 
-    // Persist to Cloud
-    // Using upsert on user_data table
-    const { error } = await supabase
-        .from('user_data')
-        .upsert({
-            user_id: currentUser.id,
-            content: state
-        });
-
-    if (error) console.error('Error saving to cloud:', error);
+    try {
+        const { error } = await supabase
+            .from('user_data')
+            .upsert({ user_id: currentUser.id, content: state });
+        if (error) console.error('Error guardando en nube:', error);
+    } catch (err) {
+        console.error("Error inesperado guardando datos:", err);
+    }
 }
-
 
 // --- EXISTING APP LOGIC ---
 
 function getActiveProfile() {
+    if (!state.profiles[state.activeProfileId]) {
+        // Fallback if active profile is deleted or missing
+        const keys = Object.keys(state.profiles);
+        if (keys.length > 0) state.activeProfileId = keys[0];
+    }
     return state.profiles[state.activeProfileId];
 }
 
 function switchView(targetId) {
+    if (!elements.views) return;
+
     elements.views.forEach(view => {
         if (view.id === targetId) {
             view.classList.add('active');
@@ -272,49 +283,62 @@ function switchView(targetId) {
         }
     });
 
-    if (targetId === 'view-dashboard') elements.appTitle.textContent = getActiveProfile()?.name || 'Portfolio';
-    if (targetId === 'view-log') elements.appTitle.textContent = 'Log Trade';
-    if (targetId === 'view-profile') elements.appTitle.textContent = 'Profiles';
+    // Validations to ensure elements exist before accessing
+    if (!elements.appTitle) return;
+
+    const profile = getActiveProfile();
+    const profileName = profile ? profile.name : 'Portafolio';
+
+    if (targetId === 'view-dashboard') elements.appTitle.textContent = profileName;
+    if (targetId === 'view-log') elements.appTitle.textContent = 'Registrar Op.';
+    if (targetId === 'view-profile') elements.appTitle.textContent = 'Perfiles';
     if (targetId === 'view-analytics') {
-        elements.appTitle.textContent = 'Analytics';
-        renderAnalytics(getActiveProfile());
+        elements.appTitle.textContent = 'Análisis';
+        renderAnalytics(profile);
     }
 }
 
 function setupEventListeners() {
-    elements.navItems.forEach(item => {
-        item.addEventListener('click', () => switchView(item.dataset.target));
-    });
-
     // Auth Listeners
-    elements.authForm.addEventListener('submit', handleAuthSubmit);
-    elements.authToggleLink.addEventListener('click', (e) => {
+    if (elements.authForm) elements.authForm.addEventListener('submit', handleAuthSubmit);
+    if (elements.authToggleLink) elements.authToggleLink.addEventListener('click', (e) => {
         e.preventDefault();
         toggleAuthMode();
     });
-    elements.logoutBtn.addEventListener('click', handleLogout);
+    if (elements.logoutBtn) elements.logoutBtn.addEventListener('click', handleLogout);
+
+    // Nav Listeners
+    if (elements.navItems) {
+        elements.navItems.forEach(item => {
+            item.addEventListener('click', () => switchView(item.dataset.target));
+        });
+    }
 
     // Trade Listeners
-    elements.tradeForm.addEventListener('submit', handleAddTrade);
-    elements.createProfileForm.addEventListener('submit', handleCreateProfile);
-    elements.clearDataBtn.addEventListener('click', () => clearCurrentProfileData());
+    if (elements.tradeForm) elements.tradeForm.addEventListener('submit', handleAddTrade);
+    if (elements.createProfileForm) elements.createProfileForm.addEventListener('submit', handleCreateProfile);
+    if (elements.clearDataBtn) elements.clearDataBtn.addEventListener('click', () => clearCurrentProfileData());
 
-    elements.tradesList.addEventListener('click', (e) => {
-        const btn = e.target.closest('.delete-btn-card');
-        if (!btn) return;
-        handleDeleteTrade(Number(btn.dataset.id));
-    });
+    if (elements.tradesList) {
+        elements.tradesList.addEventListener('click', (e) => {
+            const btn = e.target.closest('.delete-btn-card');
+            if (!btn) return;
+            handleDeleteTrade(Number(btn.dataset.id));
+        });
+    }
 
-    elements.profileList.addEventListener('click', (e) => {
-        const card = e.target.closest('.profile-card');
-        if (card && !e.target.closest('.delete-profile-btn')) {
-            switchProfile(card.dataset.id);
-        }
-        const deleteBtn = e.target.closest('.delete-profile-btn');
-        if (deleteBtn) {
-            handleDeleteProfile(deleteBtn.dataset.id);
-        }
-    });
+    if (elements.profileList) {
+        elements.profileList.addEventListener('click', (e) => {
+            const card = e.target.closest('.profile-card');
+            if (card && !e.target.closest('.delete-profile-btn')) {
+                switchProfile(card.dataset.id);
+            }
+            const deleteBtn = e.target.closest('.delete-profile-btn');
+            if (deleteBtn) {
+                handleDeleteProfile(deleteBtn.dataset.id);
+            }
+        });
+    }
 }
 
 function handleCreateProfile(e) {
@@ -348,10 +372,10 @@ function switchProfile(id) {
 
 function handleDeleteProfile(id) {
     if (Object.keys(state.profiles).length <= 1) {
-        alert("You must have at least one profile.");
+        alert("Debes tener al menos un perfil.");
         return;
     }
-    if (confirm(`Delete profile "${state.profiles[id].name}"?`)) {
+    if (confirm(`¿Eliminar perfil "${state.profiles[id].name}"?`)) {
         delete state.profiles[id];
         if (state.activeProfileId === id) {
             state.activeProfileId = Object.keys(state.profiles)[0];
@@ -377,8 +401,8 @@ function renderProfileList() {
             <div style="display:flex; align-items:center;">
                 <div class="profile-avatar">${initialChar}</div>
                 <div class="profile-info">
-                    <span class="profile-name">${p.name} ${isActive ? '(Active)' : ''}</span>
-                    <span class="profile-sub">${p.trades.length} Trades</span>
+                    <span class="profile-name">${p.name} ${isActive ? '(Activo)' : ''}</span>
+                    <span class="profile-sub">${p.trades.length} Operaciones</span>
                 </div>
             </div>
             ${!isActive ? `<button class="delete-btn-card delete-profile-btn" data-id="${p.id}"><span class="material-icons-round">delete_outline</span></button>` : ''}
@@ -401,7 +425,7 @@ function handleAddTrade(e) {
 
     if (isInitial) {
         if (profile.trades.length > 0) {
-            if (!confirm('Warning: Setting Initial Capital will reset all previous trades. Continue?')) {
+            if (!confirm('Advertencia: Establecer Capital Inicial reiniciará todas las operaciones anteriores. ¿Continuar?')) {
                 return;
             }
         }
@@ -420,7 +444,7 @@ function handleAddTrade(e) {
         });
     } else {
         if (profile.trades.length === 0) {
-            alert('Please register Initial Capital first.');
+            alert('Por favor registra el Capital Inicial primero.');
             return;
         }
         const previousBalance = profile.trades[0].balanceAfter; // Newest is 0
@@ -452,21 +476,21 @@ function handleDeleteTrade(id) {
 
     const trade = profile.trades[tradeIndex];
     if (trade.isInitial) {
-        if (confirm('Removing Initial Capital will reset all data. Are you sure?')) {
+        if (confirm('Eliminar el Capital Inicial reiniciará todos los datos. ¿Estás seguro?')) {
             profile.trades = [];
             profile.initialCapital = 0;
             saveState();
         }
         return;
     }
-    if (confirm('Delete this trade?')) {
+    if (confirm('¿Eliminar esta operación?')) {
         profile.trades.splice(tradeIndex, 1);
         saveState();
     }
 }
 
 function clearCurrentProfileData() {
-    if (confirm('Clear ALL data for the CURRENT profile?')) {
+    if (confirm('¿Borrar TODOS los datos del perfil ACTUAL?')) {
         const profile = getActiveProfile();
         profile.trades = [];
         profile.initialCapital = 0;
@@ -478,7 +502,6 @@ function updateUI() {
     const profile = getActiveProfile();
     if (!profile) return;
 
-    // Summary
     const currentVal = profile.trades.length > 0 ? profile.trades[0].balanceAfter : 0;
     const totalDiff = currentVal - profile.initialCapital;
     const totalPerc = profile.initialCapital > 0 ? (totalDiff / profile.initialCapital) * 100 : 0;
@@ -500,7 +523,7 @@ function updateUI() {
 
     elements.totalTrades.textContent = totalTradesCount;
     elements.winRate.textContent = `${winRateVal}%`;
-    elements.winLoss.textContent = `${wins}W / ${losses}L`;
+    elements.winLoss.textContent = `${wins}G / ${losses}P`;
 
     renderTradesList(profile.trades);
 }
@@ -519,10 +542,9 @@ function renderTradesList(trades) {
         const isProfit = trade.profit >= 0;
         const profitClass = isProfit ? 'profit-text' : 'loss-text';
         const sign = isProfit ? '+' : '';
-        const displayProfit = trade.isInitial ? 'Start' : `${sign}${formatMoney(trade.profit)}`;
+        const displayProfit = trade.isInitial ? 'Inicio' : `${sign}${formatMoney(trade.profit)}`;
         const displayPerc = trade.isInitial ? '' : `<span class="trade-perc ${profitClass}">(${sign}${trade.percentage.toFixed(1)}%)</span>`;
 
-        // Logo Logic
         const assetInitial = trade.asset ? trade.asset.charAt(0).toUpperCase() : '?';
         const symbolLower = trade.asset ? trade.asset.toLowerCase() : '';
         const logoUrl = `https://assets.coincap.io/assets/icons/${symbolLower}@2x.png`;
@@ -555,17 +577,15 @@ function renderAnalytics(profile) {
     if (!profile || profile.trades.length === 0) {
         elements.analyticsEquity.textContent = "$0.00";
         elements.statAvgGain.textContent = "0%";
-        elements.monthlyList.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>No data available</p>";
+        elements.monthlyList.innerHTML = "<p style='color:var(--text-muted); text-align:center;'>No hay datos disponibles</p>";
         elements.chartLine.setAttribute('d', '');
         elements.chartFill.setAttribute('d', '');
         return;
     }
 
-    // 1. Equity
     const currentEquity = profile.trades[0].balanceAfter;
     elements.analyticsEquity.textContent = formatMoney(currentEquity);
 
-    // 2. Metrics
     const activeTrades = profile.trades.filter(t => !t.isInitial);
 
     // Avg Gain
@@ -597,36 +617,31 @@ function renderAnalytics(profile) {
     elements.statProfitFactor.textContent = pf === 999 ? "∞" : pf.toFixed(2);
 
     let pfText = "Neutral";
-    if (pf > 2) pfText = "Excellent";
-    else if (pf > 1.5) pfText = "Good";
-    else if (pf > 1) pfText = "Profitable";
-    else if (pf > 0) pfText = "Unprofitable";
+    if (pf > 2) pfText = "Excelente";
+    else if (pf > 1.5) pfText = "Bueno";
+    else if (pf > 1) pfText = "Rentable";
+    else if (pf > 0) pfText = "No Rentable";
     elements.statProfitFactorText.textContent = pfText;
 
 
-    // 3. Render Chart
+    // Render Chart
     generateChartSVG(profile.trades);
 
-    // 4. Monthly Breakdown
+    // Monthly Breakdown
     renderMonthlyBreakdown(profile.trades);
 }
 
 function generateChartSVG(trades) {
-    // Sort chronological: Oldest first
     const chronological = [...trades].sort((a, b) => new Date(a.date) - new Date(b.date));
 
-    // Prepare data points (Balance history)
-    // We want to map balances to Y axis (0 to 220px)
-    // Map dates to X axis (0 to 375px)
     const points = chronological.map(t => t.balanceAfter);
     if (points.length < 2) {
-        // Not enough data for a line
         elements.chartLine.setAttribute('d', '');
         elements.chartFill.setAttribute('d', '');
         return;
     }
 
-    const maxVal = Math.max(...points) * 1.05; // 5% buffer
+    const maxVal = Math.max(...points) * 1.05;
     const minVal = Math.min(...points) * 0.95;
     const range = maxVal - minVal;
 
@@ -647,11 +662,9 @@ function generateChartSVG(trades) {
 
     elements.chartLine.setAttribute('d', d);
 
-    // Fill Area
     const fillD = `${d} L ${width} ${height} L 0 ${height} Z`;
     elements.chartFill.setAttribute('d', fillD);
 
-    // Active Point (Last)
     const last = coords[coords.length - 1];
     elements.chartActivePoint.setAttribute('cx', last.x);
     elements.chartActivePoint.setAttribute('cy', last.y);
@@ -664,7 +677,7 @@ function renderMonthlyBreakdown(trades) {
     trades.forEach(t => {
         if (t.isInitial) return;
         const d = new Date(t.date);
-        const key = `${d.getFullYear()}-${d.getMonth() + 1}`; // "2024-1"
+        const key = `${d.getFullYear()}-${d.getMonth() + 1}`;
         const monthName = d.toLocaleDateString(CONFIG.LOCALE, { month: 'short' });
 
         if (!months[key]) months[key] = { name: monthName, profit: 0 };
@@ -698,20 +711,21 @@ function renderMonthlyBreakdown(trades) {
         `;
     });
 
-    if (html === '') html = '<p style="color:var(--text-muted); text-align:center;">No monthly data</p>';
+    if (html === '') html = '<p style="color:var(--text-muted); text-align:center;">Sin datos mensuales</p>';
     elements.monthlyList.innerHTML = html;
 }
 
 function formatMoney(amount) {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat(CONFIG.LOCALE, {
         style: 'currency',
-        currency: 'USD'
+        currency: CONFIG.CURRENCY
     }).format(amount);
 }
 
 function formatDate(dateString) {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return date.toLocaleDateString(CONFIG.LOCALE, { month: 'short', day: 'numeric' });
 }
 
-init();
+// Ensure DOM is fully loaded before init
+document.addEventListener('DOMContentLoaded', init);

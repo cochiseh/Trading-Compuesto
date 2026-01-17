@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Portfolio</title>
+    <title>Portafolio Crypto</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -20,8 +20,8 @@
 
         <!-- Header (Shared) -->
         <header class="header-section" id="mainHeader" style="display:none;">
-            <div class="header-title" id="appTitle">Portfolio</div>
-            <button class="action-icon" id="clearDataBtn" title="Clear All Data"><span
+            <div class="header-title" id="appTitle">Portafolio</div>
+            <button class="action-icon" id="clearDataBtn" title="Borrar Todos los Datos"><span
                     class="material-icons-round">delete_outline</span></button>
         </header>
 
@@ -33,21 +33,21 @@
                 </div>
                 <div>
                     <h1 class="auth-title">Crypto Tracker</h1>
-                    <p class="auth-sub">Manage your portfolio and stats securely in the cloud.</p>
+                    <p class="auth-sub">Gestiona tu portafolio y estadísticas de forma segura en la nube.</p>
                 </div>
 
                 <div class="auth-form">
                     <form id="authForm">
                         <div class="form-group" style="text-align: left;">
-                            <label>Email</label>
+                            <label>Correo Electrónico</label>
                             <div class="input-container">
                                 <span class="material-icons-round input-icon"
                                     style="padding-left: 12px; font-size: 20px;">email</span>
-                                <input type="email" id="authEmail" placeholder="hello@example.com" required>
+                                <input type="email" id="authEmail" placeholder="hola@ejemplo.com" required>
                             </div>
                         </div>
                         <div class="form-group" style="text-align: left;">
-                            <label>Password</label>
+                            <label>Contraseña</label>
                             <div class="input-container">
                                 <span class="material-icons-round input-icon"
                                     style="padding-left: 12px; font-size: 20px;">lock</span>
@@ -60,13 +60,13 @@
                         </div>
 
                         <button type="submit" id="authSubmitBtn" class="btn-primary">
-                            Sign In
+                            Iniciar Sesión
                         </button>
                     </form>
 
                     <div class="auth-toggle">
-                        <span id="authToggleText">Don't have an account?</span>
-                        <a href="#" id="authToggleLink" class="auth-link">Sign Up</a>
+                        <span id="authToggleText">¿No tienes una cuenta?</span>
+                        <a href="#" id="authToggleLink" class="auth-link">Regístrate</a>
                     </div>
                 </div>
             </div>
@@ -76,27 +76,27 @@
         <div id="view-dashboard" class="view">
             <!-- PNL Hero -->
             <section class="pnl-hero">
-                <span class="pnl-label">Total Net PNL</span>
+                <span class="pnl-label">PNL Neto Total</span>
                 <div class="pnl-value" id="totalProfitLoss">+$0.00</div>
                 <div class="pnl-badge neutral" id="percentageBadge">
                     <span class="material-icons-round" style="font-size: 16px;">trending_flat</span>
                     <span id="percentageGain">0.00%</span>
                 </div>
-                <span class="pnl-sub">All time profit since inception</span>
+                <span class="pnl-sub">Beneficio histórico desde el inicio</span>
 
                 <!-- Stats Grid -->
                 <div class="stats-grid">
                     <div class="stat-item">
-                        <span class="stat-title">Total Trades</span>
+                        <span class="stat-title">Total Operaciones</span>
                         <span class="stat-num" id="totalTrades">0</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-title">Win Rate</span>
+                        <span class="stat-title">Tasa de Acierto</span>
                         <span class="stat-num" id="winRate">0%</span>
                     </div>
                     <div class="stat-item">
-                        <span class="stat-title">Win / Loss</span>
-                        <span class="stat-num" id="winLoss">0W / 0L</span>
+                        <span class="stat-title">Ganadas / Perdidas</span>
+                        <span class="stat-num" id="winLoss">0G / 0P</span>
                     </div>
                 </div>
             </section>
@@ -104,13 +104,13 @@
             <!-- Recent Trades -->
             <section class="recent-trades">
                 <div class="section-title">
-                    <span>Recent Trades</span>
+                    <span>Operaciones Recientes</span>
                 </div>
 
                 <div class="trades-list" id="tradesList">
                     <div id="emptyState" class="empty-state">
                         <span class="material-icons-round" style="font-size: 32px; opacity: 0.5;">history</span>
-                        <p>No trades yet</p>
+                        <p>Sin operaciones aún</p>
                     </div>
                 </div>
             </section>
@@ -119,7 +119,7 @@
         <!-- VIEW 2: ANALYTICS -->
         <div id="view-analytics" class="view">
             <section class="pnl-hero" style="margin-bottom:10px;">
-                <span class="pnl-label">Total Equity</span>
+                <span class="pnl-label">Capital Total</span>
                 <div class="pnl-value" id="analyticsEquity">$0.00</div>
             </section>
 
@@ -150,22 +150,22 @@
 
             <!-- Advanced Metrics -->
             <div class="section-title"><span class="material-icons-round"
-                    style="font-size:18px; color:var(--primary-blue); margin-right:6px;">grid_view</span> Key Metrics
+                    style="font-size:18px; color:var(--primary-blue); margin-right:6px;">grid_view</span> Métricas Clave
             </div>
             <div class="metrics-grid-advanced">
                 <!-- Avg Gain -->
                 <div class="metric-card">
                     <div class="metric-header">
-                        <span class="metric-label">Avg. Gain</span>
+                        <span class="metric-label">Ganancia Prom.</span>
                         <span class="material-icons-round profit-text" style="font-size:16px;">arrow_outward</span>
                     </div>
                     <p class="metric-value" id="statAvgGain">0%</p>
-                    <p class="metric-sub">per trade</p>
+                    <p class="metric-sub">por operación</p>
                 </div>
                 <!-- Profit Factor -->
                 <div class="metric-card">
                     <div class="metric-header">
-                        <span class="metric-label">Profit Factor</span>
+                        <span class="metric-label">Factor Beneficio</span>
                         <span class="material-icons-round" style="font-size:16px; color:white;">balance</span>
                     </div>
                     <p class="metric-value" id="statProfitFactor">0.00</p>
@@ -174,7 +174,7 @@
                 <!-- Best Trade -->
                 <div class="metric-card">
                     <div class="metric-header">
-                        <span class="metric-label">Best Trade</span>
+                        <span class="metric-label">Mejor Op.</span>
                         <span class="material-icons-round profit-text" style="font-size:16px;">emoji_events</span>
                     </div>
                     <p class="metric-value profit-text" id="statBestTrade">0%</p>
@@ -183,7 +183,7 @@
                 <!-- Worst Trade -->
                 <div class="metric-card">
                     <div class="metric-header">
-                        <span class="metric-label">Worst Trade</span>
+                        <span class="metric-label">Peor Op.</span>
                         <span class="material-icons-round loss-text" style="font-size:16px;">trending_down</span>
                     </div>
                     <p class="metric-value loss-text" id="statWorstTrade">0%</p>
@@ -193,8 +193,7 @@
 
             <!-- Monthly Breakdown -->
             <div class="section-title"><span class="material-icons-round"
-                    style="font-size:18px; color:var(--primary-blue); margin-right:6px;">calendar_month</span> Monthly
-                Returns</div>
+                    style="font-size:18px; color:var(--primary-blue); margin-right:6px;">calendar_month</span> Retorno Mensual</div>
             <div class="monthly-list" id="monthlyList">
                 <!-- Injected via JS -->
             </div>
@@ -206,26 +205,26 @@
                 <!-- <div class="section-title">New Entry</div> -->
                 <form id="tradeForm">
                     <div class="form-group">
-                        <label>Cryptocurrency Pair</label>
+                        <label>Par de Criptomoneda</label>
                         <div class="input-container">
                             <span class="material-icons-round input-icon" style="padding-left: 16px;">search</span>
-                            <input type="text" id="assetName" placeholder="Search asset (e.g. BTC)" required>
+                            <input type="text" id="assetName" placeholder="Buscar activo (ej. BTC)" required>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label>New Total Balance</label>
+                        <label>Nuevo Balance Total</label>
                         <div class="input-container">
                             <span style="padding-left: 16px; color: var(--text-white); font-weight: 600;">$</span>
                             <input type="number" id="investedAmount" placeholder="0.00" step="0.01"
                                 style="font-size: 1.5rem; font-weight: 700;" required>
                         </div>
-                        <small style="color: var(--text-muted); display: block; margin-top: 6px;">Enter the total value
-                            of your portfolio after this trade.</small>
+                        <small style="color: var(--text-muted); display: block; margin-top: 6px;">Introduce el valor total
+                            de tu portafolio después de esta operación.</small>
                     </div>
 
                     <div class="form-group">
-                        <label>Date Completed</label>
+                        <label>Fecha Completada</label>
                         <div class="input-container">
                             <input type="date" id="tradeDate" required>
                             <span class="material-icons-round input-icon">calendar_today</span>
@@ -237,15 +236,15 @@
                             <input type="checkbox" id="isInitialInvestment">
                             <span class="checkmark"></span>
                             <div style="display:flex; flex-direction:column;">
-                                <span style="font-weight:600; font-size: 0.95rem;">Initial Capital</span>
-                                <span style="font-size:0.8rem; color: var(--text-muted);">Mark this if this is your
-                                    starting balance</span>
+                                <span style="font-weight:600; font-size: 0.95rem;">Capital Inicial</span>
+                                <span style="font-size:0.8rem; color: var(--text-muted);">Marca esto si este es tu
+                                    balance inicial</span>
                             </div>
                         </label>
                     </div>
 
                     <button type="submit" class="btn-primary">
-                        Save Trade
+                        Guardar Operación
                     </button>
                 </form>
             </section>
@@ -253,30 +252,30 @@
 
         <!-- VIEW 4: PROFILE -->
         <div id="view-profile" class="view">
-            <div class="section-title">Your Profiles</div>
+            <div class="section-title">Tus Perfiles</div>
 
             <div class="profile-list" id="profileList">
                 <!-- Profile Cards Injected Here -->
             </div>
 
             <div style="margin-top: 32px;">
-                <div class="section-title">Use Profiles</div>
+                <div class="section-title">Usar Perfiles</div>
                 <form id="createProfileForm">
                     <div class="form-group">
-                        <label>Name</label>
+                        <label>Nombre</label>
                         <div class="input-container">
-                            <input type="text" id="newProfileName" placeholder="Enter name" required>
+                            <input type="text" id="newProfileName" placeholder="Introduce un nombre" required>
                         </div>
                     </div>
                     <button type="submit" class="btn-primary"
                         style="background: var(--card-bg); border: 1px solid var(--border-color);">
-                        <span class="material-icons-round">person_add</span> Create Profile
+                        <span class="material-icons-round">person_add</span> Crear Perfil
                     </button>
                 </form>
 
                 <button id="logoutBtn"
                     style="width: 100%; margin-top: 40px; background: rgba(255,59,48,0.1); color: var(--danger-red); border: 1px solid var(--danger-red); padding: 14px; border-radius: var(--btn-radius); font-weight:600; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px;">
-                    <span class="material-icons-round">logout</span> Sign Out
+                    <span class="material-icons-round">logout</span> Cerrar Sesión
                 </button>
             </div>
         </div>
@@ -285,19 +284,19 @@
         <nav class="bottom-nav">
             <button class="nav-item active" data-target="view-dashboard">
                 <span class="material-icons-round nav-icon">dashboard</span>
-                <span>Home</span>
+                <span>Inicio</span>
             </button>
             <button class="nav-item" data-target="view-analytics">
                 <span class="material-icons-round nav-icon">insights</span>
-                <span>Analysis</span>
+                <span>Análisis</span>
             </button>
             <button class="nav-item" data-target="view-log">
                 <span class="material-icons-round nav-icon">add_circle</span>
-                <span>Log</span>
+                <span>Registrar</span>
             </button>
             <button class="nav-item" data-target="view-profile">
                 <span class="material-icons-round nav-icon">person</span>
-                <span>Profile</span>
+                <span>Perfil</span>
             </button>
         </nav>
 
