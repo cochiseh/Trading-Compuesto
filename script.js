@@ -140,7 +140,10 @@ async function handleSessionSuccess(user) {
 
 async function handleAuthSubmit(e) {
     e.preventDefault();
-    if (!supabase) return;
+    if (!supabase) {
+        alert("ERROR CRÍTICO: No se pudo conectar con Supabase. Revisa tu conexión a internet o la configuración.");
+        return;
+    }
 
     const email = elements.authEmail.value;
     const password = elements.authPassword.value;
