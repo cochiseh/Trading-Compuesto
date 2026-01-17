@@ -1,7 +1,7 @@
 const CONFIG = {
     // ⚠️ REPLACE THESE WITH YOUR OWN SUPABASE KEYS ⚠️
     SUPABASE_URL: 'https://agvjxfekuxmvnanlnacx.supabase.co',
-    SUPABASE_KEY: 'sb_publishable_CGSoHknNKXtYJ_jwubGbQw_fo3lGdAE',
+    SUPABASE_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFndmp4ZmVrdXhtdm5hbmxuYWN4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg1NjUwMjksImV4cCI6MjA4NDE0MTAyOX0.W5ZVBr3y1y_OVD9EeYVTRmeiU04ImcuUXFxooHE4J64',
 
     LOCALE: 'es-ES',
     CURRENCY: 'USD'
@@ -172,6 +172,9 @@ async function handleAuthSubmit(e) {
         }
     } catch (err) {
         console.error(err);
+        // DEBUG: Mostrar error completo para diagnóstico
+        alert("DEBUG ERROR: " + JSON.stringify(err, null, 2));
+
         let msg = err.message;
         if (msg === "Invalid login credentials") msg = "Credenciales inválidas. Verifica tu correo y contraseña.";
         if (msg.includes("weak_password")) msg = "La contraseña debe tener al menos 6 caracteres.";
