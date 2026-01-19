@@ -47,6 +47,7 @@ async function init() {
 
         // Auth
         authForm: document.getElementById('authForm'),
+        authTitle: document.getElementById('authTitle'),
         authEmail: document.getElementById('authEmail'),
         authPassword: document.getElementById('authPassword'),
         authSubmitBtn: document.getElementById('authSubmitBtn'),
