@@ -383,10 +383,20 @@ async function saveState() {
     updateUI();
 
     try {
-        await supabaseClient.from('user_data').upsert({
-            user_id: currentUser.id,
-            content: state
-        });
+        const { error } = await supabaseClient.from('user_data').upsert(
+            {
+                user_id: currentUser.id,
+                content: state,
+                updated_at: new Date().toISOString()
+            },
+            { onConflict: 'user_id' }
+        );
+
+        if (error) {
+            console.error('Save error:', error);
+        } else {
+            console.log('Data saved successfully');
+        }
     } catch (err) {
         console.error('Save error:', err);
     }
