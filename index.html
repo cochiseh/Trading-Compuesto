@@ -25,7 +25,11 @@
                 <div class="header-title" id="appTitle">Portfolio</div>
             </div>
             <div class="header-right">
-                <button class="action-icon" id="clearDataBtn" title="Borrar Datos">
+                <div class="strategy-badge" id="strategyBadge" style="display:none;">
+                    <span class="material-symbols-outlined" id="strategyBadgeIcon">trending_up</span>
+                    <span id="strategyBadgeText">Compound</span>
+                </div>
+                <button class="action-icon" id="clearDataBtn" title="Clear Data">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
                 <div class="user-avatar" id="userAvatar">JD</div>
@@ -116,11 +120,11 @@
             <div id="emptyState" class="empty-state">
                 <span class="material-symbols-outlined">query_stats</span>
                 <p>No trades recorded yet.</p>
-                <button class="btn-primary btn-small" onclick="switchView('view-log')">Log Initial Capital</button>
+                <button class="btn-primary btn-small" onclick="switchView('view-log')">Log Trade</button>
             </div>
         </div>
 
-        <!-- LOG TRADE VIEW -->
+        <!-- LOG TRADE VIEW - COMPOUND -->
         <div id="view-log" class="view">
             <div class="view-header">
                 <button class="back-btn" onclick="switchView('view-dashboard')">
@@ -130,63 +134,142 @@
                 <div style="width: 40px;"></div>
             </div>
 
-            <div class="form-section">
-                <h3>New Entry</h3>
-                <p class="form-description">Enter the details of your closed position.</p>
+            <!-- Compound Trade Form -->
+            <div id="compoundFormContainer">
+                <div class="form-section">
+                    <h3>New Entry</h3>
+                    <p class="form-description">Enter the details of your closed position.</p>
+                </div>
+
+                <form id="tradeForm" class="trade-form">
+                    <div class="form-group">
+                        <label>Cryptocurrency Pair</label>
+                        <div class="crypto-selector" id="cryptoSelector">
+                            <div class="crypto-selected" id="selectedCrypto">
+                                <img src="" alt="" class="crypto-logo" id="selectedCryptoLogo" style="display:none;">
+                                <span class="material-symbols-outlined search-icon">search</span>
+                                <span id="selectedCryptoText">Search asset (e.g. BTC)</span>
+                            </div>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <input type="hidden" id="assetName" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Date Completed</label>
+                        <div class="input-container date-input">
+                            <input type="date" id="tradeDate" required>
+                            <span class="material-symbols-outlined">calendar_today</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>New Total Balance</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="investedAmount" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <span class="help-text">Enter the total value of your portfolio after this trade.</span>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="isInitialInvestment">
+                        <label for="isInitialInvestment">This is my initial capital</label>
+                    </div>
+
+                    <div class="info-card">
+                        <div class="info-content">
+                            <h4>Why only final balance?</h4>
+                            <p>Since you compound 100% of capital, we only need the final result to calculate your
+                                profit automatically.</p>
+                        </div>
+                        <div class="info-chart">
+                            <span class="material-symbols-outlined">show_chart</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">
+                        <span>Save Trade</span>
+                        <span class="material-symbols-outlined">check</span>
+                    </button>
+                </form>
             </div>
 
-            <form id="tradeForm" class="trade-form">
-                <div class="form-group">
-                    <label>Cryptocurrency Pair</label>
-                    <div class="crypto-selector" id="cryptoSelector">
-                        <div class="crypto-selected" id="selectedCrypto">
-                            <img src="" alt="" class="crypto-logo" id="selectedCryptoLogo" style="display:none;">
-                            <span class="material-symbols-outlined search-icon">search</span>
-                            <span id="selectedCryptoText">Search asset (e.g. BTC)</span>
+            <!-- Normal Trade Form -->
+            <div id="normalFormContainer" style="display:none;">
+                <div class="form-section">
+                    <h3>New Trade</h3>
+                    <p class="form-description">Enter the details of your trade.</p>
+                </div>
+
+                <form id="normalTradeForm" class="trade-form">
+                    <div class="form-group">
+                        <label>Cryptocurrency</label>
+                        <div class="crypto-selector" id="cryptoSelectorNormal">
+                            <div class="crypto-selected" id="selectedCryptoNormal">
+                                <img src="" alt="" class="crypto-logo" id="selectedCryptoLogoNormal"
+                                    style="display:none;">
+                                <span class="material-symbols-outlined search-icon">search</span>
+                                <span id="selectedCryptoTextNormal">Search asset (e.g. BTC)</span>
+                            </div>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
                         </div>
-                        <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        <input type="hidden" id="assetNameNormal" required>
                     </div>
-                    <input type="hidden" id="assetName" required>
-                </div>
 
-                <div class="form-group">
-                    <label>Date Completed</label>
-                    <div class="input-container date-input">
-                        <input type="date" id="tradeDate" required>
-                        <span class="material-symbols-outlined">calendar_today</span>
+                    <div class="form-group">
+                        <label>Date</label>
+                        <div class="input-container date-input">
+                            <input type="date" id="tradeDateNormal" required>
+                            <span class="material-symbols-outlined">calendar_today</span>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label>New Total Balance</label>
-                    <div class="input-container money-input">
-                        <span class="currency-symbol">$</span>
-                        <input type="number" id="investedAmount" step="0.01" placeholder="0.00" required>
+                    <div class="form-group">
+                        <label>Trade Type</label>
+                        <div class="trade-type-toggle">
+                            <button type="button" class="trade-type-btn active" data-type="long" id="btnLong">
+                                <span class="material-symbols-outlined">trending_up</span>
+                                Long
+                            </button>
+                            <button type="button" class="trade-type-btn" data-type="short" id="btnShort">
+                                <span class="material-symbols-outlined">trending_down</span>
+                                Short
+                            </button>
+                        </div>
+                        <input type="hidden" id="tradeTypeNormal" value="long">
                     </div>
-                    <span class="help-text">Enter the total value of your portfolio after this trade.</span>
-                </div>
 
-                <div class="form-group checkbox-group">
-                    <input type="checkbox" id="isInitialInvestment">
-                    <label for="isInitialInvestment">This is my initial capital</label>
-                </div>
-
-                <div class="info-card">
-                    <div class="info-content">
-                        <h4>Why only final balance?</h4>
-                        <p>Since you compound 100% of capital, we only need the final result to calculate your profit
-                            automatically.</p>
+                    <div class="form-group">
+                        <label>Amount Risked (USDT)</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="amountRisked" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <span class="help-text">The amount you risked on this trade.</span>
                     </div>
-                    <div class="info-chart">
-                        <span class="material-symbols-outlined">show_chart</span>
-                    </div>
-                </div>
 
-                <button type="submit" class="btn-primary btn-full">
-                    <span>Save Trade</span>
-                    <span class="material-symbols-outlined">check</span>
-                </button>
-            </form>
+                    <div class="form-group">
+                        <label>Result (USDT)</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="tradeResult" step="0.01" placeholder="0.00 (negative for loss)"
+                                required>
+                        </div>
+                        <span class="help-text">Profit or loss from this trade (use negative for losses).</span>
+                    </div>
+
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="isInitialCapitalNormal">
+                        <label for="isInitialCapitalNormal">This is my initial capital deposit</label>
+                    </div>
+
+                    <button type="submit" class="btn-primary btn-full">
+                        <span>Save Trade</span>
+                        <span class="material-symbols-outlined">check</span>
+                    </button>
+                </form>
+            </div>
         </div>
 
         <!-- ANALYTICS VIEW -->
@@ -209,6 +292,15 @@
                     <span id="equityPercent">+0%</span>
                     <span class="equity-period">(All time)</span>
                 </div>
+            </div>
+
+            <!-- Time Filter (for Normal strategy) -->
+            <div class="time-filters" id="timeFilters" style="display:none;">
+                <button class="time-filter-btn" data-period="1D">1D</button>
+                <button class="time-filter-btn" data-period="1W">1W</button>
+                <button class="time-filter-btn active" data-period="1M">1M</button>
+                <button class="time-filter-btn" data-period="1Y">1Y</button>
+                <button class="time-filter-btn" data-period="ALL">ALL</button>
             </div>
 
             <div class="chart-container">
@@ -263,6 +355,23 @@
                 </div>
             </div>
 
+            <!-- Long/Short Stats (for Normal strategy) -->
+            <div class="long-short-stats" id="longShortStats" style="display:none;">
+                <h3><span class="material-symbols-outlined">swap_vert</span> Long/Short Analysis</h3>
+                <div class="ls-grid">
+                    <div class="ls-card long">
+                        <span class="ls-label">Long Accuracy</span>
+                        <span class="ls-value" id="longAccuracy">0%</span>
+                        <span class="ls-count" id="longCount">0 trades</span>
+                    </div>
+                    <div class="ls-card short">
+                        <span class="ls-label">Short Accuracy</span>
+                        <span class="ls-value" id="shortAccuracy">0%</span>
+                        <span class="ls-count" id="shortCount">0 trades</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="monthly-section">
                 <div class="section-header">
                     <h3><span class="material-symbols-outlined">calendar_month</span> Monthly Returns</h3>
@@ -282,22 +391,120 @@
                 <div style="width: 40px;"></div>
             </div>
 
-            <form id="createProfileForm" class="profile-form">
-                <div class="form-group">
-                    <label>New Portfolio Name</label>
-                    <div class="input-container">
-                        <input type="text" id="newProfileName" placeholder="My Trading Account..." required>
-                        <button type="submit" class="btn-icon">
-                            <span class="material-symbols-outlined">add</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
+            <button class="btn-primary btn-full" id="createProfileBtn" style="margin-bottom: 24px;">
+                <span class="material-symbols-outlined">add</span>
+                <span>New Portfolio</span>
+            </button>
 
             <div class="section-header">
                 <h3>My Accounts</h3>
             </div>
             <div id="profileList" class="profile-list"></div>
+        </div>
+
+        <!-- OBJECTIVES VIEW -->
+        <div id="view-objectives" class="view">
+            <div class="view-header">
+                <button class="back-btn" onclick="switchView('view-dashboard')">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2>Mis Objetivos</h2>
+                <div style="width: 40px;"></div>
+            </div>
+
+            <!-- Stats globales -->
+            <div class="objectives-stats-card">
+                <div class="obj-stat">
+                    <span class="obj-stat-value" id="totalGoals">0</span>
+                    <span class="obj-stat-label">Total</span>
+                </div>
+                <div class="obj-stat">
+                    <span class="obj-stat-value success" id="completedGoals">0</span>
+                    <span class="obj-stat-label">Completados</span>
+                </div>
+                <div class="obj-stat">
+                    <span class="obj-stat-value" id="activeGoals">0</span>
+                    <span class="obj-stat-label">Activos</span>
+                </div>
+                <div class="obj-stat">
+                    <span class="obj-stat-value danger" id="lostGoals">0</span>
+                    <span class="obj-stat-label">Perdidos</span>
+                </div>
+                <div class="obj-stat">
+                    <span class="obj-stat-value" id="successRateGoals">0%</span>
+                    <span class="obj-stat-label">Éxito</span>
+                </div>
+            </div>
+
+            <!-- Botón crear objetivo -->
+            <button class="btn-primary btn-full" id="createGoalBtn" style="margin-bottom:24px;">
+                <span class="material-symbols-outlined">add</span>
+                <span>Nuevo Objetivo</span>
+            </button>
+
+            <!-- Lista de objetivos -->
+            <div id="goalsList" class="goals-list"></div>
+        </div>
+
+        <!-- GOAL DETAIL VIEW -->
+        <div id="view-goal-detail" class="view">
+            <div class="view-header">
+                <button class="back-btn" onclick="switchView('view-objectives')">
+                    <span class="material-symbols-outlined">arrow_back</span>
+                </button>
+                <h2 id="goalDetailTitle">Objetivo</h2>
+                <button class="action-icon" id="deleteGoalBtn">
+                    <span class="material-symbols-outlined">delete</span>
+                </button>
+            </div>
+
+            <!-- Barra de progreso -->
+            <div class="goal-progress-card" id="goalProgressCard">
+                <div class="goal-status-badge" id="goalStatusBadge">Activo</div>
+                <div class="goal-amounts">
+                    <span class="goal-current" id="goalCurrentAmount">$0.00</span>
+                    <span class="goal-target">de <span id="goalTargetAmount">$0.00</span></span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar-fill" id="goalProgressFill"></div>
+                </div>
+                <div class="goal-remaining">
+                    <span id="goalRemainingText">Faltan $0.00</span>
+                    <span id="goalProgressPercent">0%</span>
+                </div>
+            </div>
+
+            <!-- Estadísticas del objetivo -->
+            <div class="goal-stats-grid">
+                <div class="goal-stat-item">
+                    <span class="goal-stat-label">Balance</span>
+                    <span class="goal-stat-value" id="goalBalance">$0.00</span>
+                </div>
+                <div class="goal-stat-item">
+                    <span class="goal-stat-label">Ganancia</span>
+                    <span class="goal-stat-value" id="goalProfit">$0.00</span>
+                </div>
+                <div class="goal-stat-item">
+                    <span class="goal-stat-label">% Total</span>
+                    <span class="goal-stat-value" id="goalPercent">0%</span>
+                </div>
+                <div class="goal-stat-item">
+                    <span class="goal-stat-label">Trades</span>
+                    <span class="goal-stat-value" id="goalTradeCount">0</span>
+                </div>
+            </div>
+
+            <!-- Botón añadir trade -->
+            <button class="btn-primary btn-full" id="addGoalTradeBtn" style="margin:16px 0;">
+                <span class="material-symbols-outlined">add</span>
+                <span>Añadir Trade</span>
+            </button>
+
+            <!-- Lista de trades del objetivo -->
+            <div class="section-header">
+                <h3>Historial de Trades</h3>
+            </div>
+            <div id="goalTradesList" class="trades-list"></div>
         </div>
 
         <!-- Navigation Bar -->
@@ -345,6 +552,194 @@
                         Add Custom Token
                     </button>
                 </div>
+            </div>
+        </div>
+
+        <!-- Strategy Selection Modal -->
+        <div id="strategyModal" class="modal">
+            <div class="modal-content strategy-modal">
+                <div class="modal-header">
+                    <h3>Choose Strategy Type</h3>
+                    <button class="modal-close" id="closeStrategyModal">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="strategy-name-input">
+                    <label>Portfolio Name</label>
+                    <input type="text" id="newProfileName" placeholder="My Trading Account...">
+                </div>
+                <div class="strategy-options">
+                    <div class="strategy-card" data-strategy="compound">
+                        <div class="strategy-icon compound">
+                            <span class="material-symbols-outlined">all_inclusive</span>
+                        </div>
+                        <h4>Trading Compuesto</h4>
+                        <p>Trade with 100% of your capital each time. Enter only the final balance after each trade.</p>
+                        <ul>
+                            <li>Best for compound growth</li>
+                            <li>Simple tracking</li>
+                            <li>Auto-calculated profits</li>
+                        </ul>
+                    </div>
+                    <div class="strategy-card" data-strategy="normal">
+                        <div class="strategy-icon normal">
+                            <span class="material-symbols-outlined">candlestick_chart</span>
+                        </div>
+                        <h4>Trading Normal</h4>
+                        <p>Trade with variable amounts. Track risk, result, and profit/loss for each trade.</p>
+                        <ul>
+                            <li>Variable position sizes</li>
+                            <li>Long & Short tracking</li>
+                            <li>Detailed statistics</li>
+                        </ul>
+                    </div>
+                    <div class="strategy-card" data-strategy="objectives">
+                        <div class="strategy-icon objectives">
+                            <span class="material-symbols-outlined">flag</span>
+                        </div>
+                        <h4>Estrategia por Objetivos</h4>
+                        <p>Define metas económicas con subcuentas independientes. Cada objetivo tiene su propio capital.
+                        </p>
+                        <ul>
+                            <li>Subcuentas independientes</li>
+                            <li>Barra de progreso visual</li>
+                            <li>Estados: Activo, Completado, Perdido</li>
+                        </ul>
+                    </div>
+                </div>
+                <p class="strategy-warning">
+                    <span class="material-symbols-outlined">info</span>
+                    Strategy type cannot be changed after creation.
+                </p>
+                <button class="btn-primary btn-full" id="confirmStrategy" disabled>
+                    <span>Create Portfolio</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Trade Detail Modal -->
+        <div id="tradeDetailModal" class="modal">
+            <div class="modal-content trade-detail">
+                <div class="modal-header">
+                    <h3>Trade Details</h3>
+                    <button class="modal-close" id="closeTradeDetail">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div id="tradeDetailContent"></div>
+                <button class="btn-danger btn-full" id="deleteTradeBtn">
+                    <span class="material-symbols-outlined">delete</span>
+                    Delete Trade
+                </button>
+            </div>
+        </div>
+
+        <!-- Create Goal Modal -->
+        <div id="createGoalModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Nuevo Objetivo</h3>
+                    <button class="modal-close" id="closeCreateGoalModal">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <form id="createGoalForm">
+                    <div class="form-group">
+                        <label>Nombre del Objetivo</label>
+                        <div class="input-container">
+                            <span class="material-symbols-outlined input-icon">flag</span>
+                            <input type="text" id="goalName" placeholder="Ej: Tablet, Viaje..." required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Capital Inicial (USDT)</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="goalInitialAmount" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <span class="help-text">Dinero con el que empiezas este objetivo.</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Importe Objetivo (USDT)</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="goalTargetAmountInput" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <span class="help-text">Cuánto dinero quieres conseguir.</span>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-content">
+                            <h4>¿Cómo funciona?</h4>
+                            <p>Cada objetivo es una subcuenta independiente. Añade trades para aumentar tu balance hacia
+                                la meta.</p>
+                        </div>
+                        <div class="info-chart">
+                            <span class="material-symbols-outlined">flag</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">
+                        <span>Crear Objetivo</span>
+                        <span class="material-symbols-outlined">check</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Add Goal Trade Modal -->
+        <div id="addGoalTradeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Añadir Trade</h3>
+                    <button class="modal-close" id="closeAddGoalTradeModal">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <form id="addGoalTradeForm">
+                    <div class="form-group">
+                        <label>Fecha</label>
+                        <div class="input-container date-input">
+                            <input type="date" id="goalTradeDate" required>
+                            <span class="material-symbols-outlined">calendar_today</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Importe del Trade (USDT)</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="goalTradeAmount" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <span class="help-text" id="goalAvailableBalance">Disponible: $0.00</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Balance Final de la Subcuenta (USDT)</label>
+                        <div class="input-container money-input">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" id="goalBalanceAfter" step="0.01" placeholder="0.00" required>
+                        </div>
+                        <span class="help-text">El balance total de esta subcuenta después del trade.</span>
+                    </div>
+                    <button type="submit" class="btn-primary btn-full">
+                        <span>Guardar Trade</span>
+                        <span class="material-symbols-outlined">check</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Goal Trade Detail Modal -->
+        <div id="goalTradeDetailModal" class="modal">
+            <div class="modal-content trade-detail">
+                <div class="modal-header">
+                    <h3>Detalle del Trade</h3>
+                    <button class="modal-close" id="closeGoalTradeDetail">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div id="goalTradeDetailContent"></div>
+                <button class="btn-danger btn-full" id="deleteGoalTradeBtn">
+                    <span class="material-symbols-outlined">delete</span>
+                    Eliminar Trade
+                </button>
             </div>
         </div>
     </div>
