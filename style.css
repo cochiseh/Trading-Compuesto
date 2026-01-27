@@ -1483,6 +1483,7 @@ body {
 .strategy-modal {
     max-height: 90vh;
     padding-bottom: 20px;
+    overflow-y: auto;
 }
 
 .strategy-name-input {
