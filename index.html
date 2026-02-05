@@ -32,7 +32,32 @@
                 <button class="action-icon" id="clearDataBtn" title="Clear Data">
                     <span class="material-symbols-outlined">delete</span>
                 </button>
-                <div class="user-avatar" id="userAvatar">JD</div>
+                <div class="user-menu-container">
+                    <div class="user-avatar" id="userAvatar">JD</div>
+                    <div class="user-dropdown" id="userDropdown">
+                        <div class="dropdown-header">
+                            <div class="dropdown-avatar" id="dropdownAvatar">JD</div>
+                            <div class="dropdown-user-info">
+                                <span class="dropdown-email" id="dropdownEmail">user@email.com</span>
+                                <span class="dropdown-role">Usuario</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="languageToggle">
+                            <span class="material-symbols-outlined">translate</span>
+                            <span class="dropdown-label">Idioma</span>
+                            <div class="language-switch">
+                                <span class="lang-option" data-lang="en">EN</span>
+                                <span class="lang-option active" data-lang="es">ES</span>
+                            </div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item danger" id="dropdownLogout">
+                            <span class="material-symbols-outlined">logout</span>
+                            <span class="dropdown-label">Cerrar Sesión</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </header>
 
@@ -701,6 +726,19 @@
                             <input type="date" id="goalTradeDate" required>
                             <span class="material-symbols-outlined">calendar_today</span>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Criptomoneda</label>
+                        <div class="crypto-selector" id="cryptoSelectorGoal">
+                            <div class="crypto-selected" id="selectedCryptoGoal">
+                                <img src="" alt="" class="crypto-logo" id="selectedCryptoLogoGoal"
+                                    style="display:none;">
+                                <span class="material-symbols-outlined search-icon">search</span>
+                                <span id="selectedCryptoTextGoal">Buscar cripto (ej. BTC)</span>
+                            </div>
+                            <span class="material-symbols-outlined dropdown-icon">expand_more</span>
+                        </div>
+                        <input type="hidden" id="goalAssetName">
                     </div>
                     <div class="form-group">
                         <label>Importe del Trade (USDT)</label>
